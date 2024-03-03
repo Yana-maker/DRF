@@ -11,4 +11,4 @@ class CarSeriliazer(serializers.ModelSerializer):
 class MotoSeriliazer(serializers.ModelSerializer):
     class Meta:
         model = Moto
-        field = '__all__'
+        fields = '__all__'
