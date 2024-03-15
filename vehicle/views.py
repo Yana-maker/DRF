@@ -1,6 +1,8 @@
 from django.shortcuts import render
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, generics
 from rest_framework.generics import CreateAPIView
+from rest_framework.filters import OrderingFilter
 
 from vehicle.models import Car, Moto, Milage
 from vehicle.serializers import CarSeriliazer, MotoSeriliazer, MilageSeriliazer, MotoMilageSerializer, \
@@ -45,3 +47,12 @@ class MilageCreateAPIView(CreateAPIView):
 class MotoMilageListAPIView(generics.ListAPIView):
     queryset = Milage.objects.filter(moto__isnull=False)
     serializer_class = MotoMilageSerializer
+
+
+class MilageListAPIView(generics.ListAPIView):
+    serializer_class = MilageSeriliazer
+    queryset = Milage.objects.all()
+
+    filter_backends = (DjangoFilterBackend, OrderingFilter,)
+    filterset_fields = ('car', 'moto')
+    ordering_fields = ('year',)

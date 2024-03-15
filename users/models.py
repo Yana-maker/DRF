@@ -10,6 +10,8 @@ payment_method = {
     'наличные': 'наличные',
     'безналичные': 'безналичные',
 }
+
+
 class User(AbstractUser):
     username = None
 
