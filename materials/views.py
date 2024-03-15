@@ -3,7 +3,7 @@ from django.shortcuts import render
 from rest_framework import viewsets, generics
 
 from materials.models import Course, Lesson
-from materials.seriliazers import CourseSerializer, LessonSerializer
+from materials.serializers import CourseSerializer, LessonSerializer
 
 
 # Create your views here.

@@ -1,0 +1,32 @@
+[
+  {
+    "model": "users.user",
+    "pk": 1,
+    "fields": {
+      "email": "yanaposelenceva@gmail.com",
+      "phone": "80000000000",
+      "city": "Moscow"
+    }
+  },
+  {
+    "model": "users.user",
+    "pk": 2,
+    "fields": {
+      "email": "yanaposelenceva@yandex.ry",
+      "phone": "91000000000",
+      "city": "Moscow"
+    }
+  },
+  {
+    "model": "users.payment",
+    "pk": 1,
+    "fields": {
+      "user": 1,
+      "payment_date": "2023-01-12",
+      "paid_course": 1,
+      "paid_lesson": 1,
+      "payment_method": "cash",
+      "amount_payment": 3000
+    }
+  }
+]
