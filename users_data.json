@@ -12,7 +12,7 @@
     "model": "users.user",
     "pk": 2,
     "fields": {
-      "email": "yanaposelenceva@yandex.ry",
+      "email": "yanaposelenceva@yandex.ru",
       "phone": "91000000000",
       "city": "Moscow"
     }
