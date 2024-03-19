@@ -18,12 +18,22 @@ from vehicle.serializers import CarSeriliazer, MotoSeriliazer, MilageSeriliazer,
 class CarViewSet(viewsets.ModelViewSet):
     serializer_class = CarSeriliazer
     queryset = Car.objects.all()
-    permission_classes = [IsAuthenticated]
+    permission_classes_by_action = {'create': [IsAuthenticated, ~IsModerator],
+                                    'list': [IsAuthenticated, IsOwner],
+                                    'retrieve': [IsAuthenticated, IsOwner],
+                                    'update': [IsAuthenticated, IsOwner],
+                                    'destroy': [IsAuthenticated, IsOwner],
+                                    }
+
+    def perform_create(self, serializer):
+        car_moto = serializer.save()
+        car_moto.owner = self.request.user
+        car_moto.save()
 
 
 class MotoCreateAPIView(generics.CreateAPIView):
     serializer_class = MotoCreateSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, ~IsModerator]
 
     def perform_create(self, serializer):
         new_moto = serializer.save()
@@ -35,25 +45,25 @@ class MotoCreateAPIView(generics.CreateAPIView):
 class MotoListAPIView(generics.ListAPIView):
     serializer_class = MotoSeriliazer
     queryset = Moto.objects.all()
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsOwner | IsModerator]
 
 
 class MotoRetrievePIView(generics.RetrieveAPIView):
     serializer_class = MotoSeriliazer
     queryset = Moto.objects.all()
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsOwner | IsModerator]
 
 
 class MotoUpdatePIView(generics.UpdateAPIView):
     serializer_class = MotoSeriliazer
     queryset = Moto.objects.all()
-    permission_classes = [IsAuthenticated, IsOwnerOrStaff]
+    permission_classes = [IsAuthenticated, IsOwner | IsModerator]
 
 
 
 class MotoDestroyPIView(generics.DestroyAPIView):
     queryset = Moto.objects.all()
-    permission_classes = [IsAuthenticated, IsOwner]
+    permission_classes = [IsAuthenticated, IsOwner, ~IsModerator]
 
 
 class MilageCreateAPIView(CreateAPIView):

@@ -15,21 +15,26 @@ class CourseViewSet(viewsets.ModelViewSet):
     serializer_class = CourseSerializer
     queryset = Course.objects.all()
 
-    permission_classes_by_action = {'create': [AllowAny],
-                                    'list': [IsAuthenticated],
-                                    'retrieve': [IsAuthenticated, IsModerator | IsOwner],
-                                    'update': [IsAuthenticated, IsOwner],
+    permission_classes_by_action = {'create': [IsAuthenticated, ~IsModerator],
+                                    'list': [IsAuthenticated, IsOwner | IsModerator],
+                                    'retrieve': [IsAuthenticated, IsOwner | IsModerator],
+                                    'update': [IsAuthenticated, IsOwner | IsModerator],
                                     'destroy': [IsAuthenticated, IsOwner],
                                     }
+
+    def perform_create(self, serializer):
+        new_car = serializer.save()
+        new_car.owner = self.request.user
+        new_car.save()
 
 
 class LessonCreateAPIView(generics.CreateAPIView):
     serializer_class = LessonSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, ~IsModerator]
 
     def perform_create(self, serializer):
         new_lesson = serializer.save()
-        new_lesson.user_owner = self.request.user
+        new_lesson.owner = self.request.user
         new_lesson.save()
 
 
@@ -44,13 +49,13 @@ class LessonListAPIView(generics.ListAPIView):
 class LessonRetrievePIView(generics.RetrieveAPIView):
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
-    permission_classes = [IsAuthenticated, IsOwner | ~IsModerator]
+    permission_classes = [IsAuthenticated, IsOwner | IsModerator]
 
 
 class LessonUpdatePIView(generics.UpdateAPIView):
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
-    permission_classes = [IsAuthenticated, IsOwner]
+    permission_classes = [IsAuthenticated, IsOwner | IsModerator]
 
 
 class LessonDestroyPIView(generics.DestroyAPIView):
