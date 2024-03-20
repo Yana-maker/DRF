@@ -61,8 +61,6 @@ REST_FRAMEWORK = {
     ]
 }
 
-
-
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

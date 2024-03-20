@@ -68,9 +68,3 @@ class PaymentUpdatePIView(generics.UpdateAPIView):
 class PaymentDestroyPIView(generics.DestroyAPIView):
     queryset = Payment.objects.all()
     permission_classes = [IsAuthenticated, IsOwnerIsNotModerator]
-
-
-
-
-
-

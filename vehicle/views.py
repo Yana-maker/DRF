@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, generics
 from rest_framework.generics import CreateAPIView
@@ -7,7 +6,6 @@ from rest_framework.permissions import IsAuthenticated
 
 from users.permissions import IsOwner, IsModerator, IsOwnerIsNotModerator
 from vehicle.models import Car, Moto, Milage
-from vehicle.permissions import IsOwnerOrStaff
 from vehicle.serializers import CarSeriliazer, MotoSeriliazer, MilageSeriliazer, MotoMilageSerializer, \
     MotoCreateSerializer
 
@@ -64,7 +62,6 @@ class MotoCreateAPIView(generics.CreateAPIView):
         new_moto.save()
 
 
-
 class MotoListAPIView(generics.ListAPIView):
     serializer_class = MotoSeriliazer
     queryset = Moto.objects.all()
@@ -81,7 +78,6 @@ class MotoUpdatePIView(generics.UpdateAPIView):
     serializer_class = MotoSeriliazer
     queryset = Moto.objects.all()
     permission_classes = [IsAuthenticated, IsOwner | IsModerator]
-
 
 
 class MotoDestroyPIView(generics.DestroyAPIView):
