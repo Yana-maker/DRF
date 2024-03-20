@@ -19,9 +19,9 @@ class CarViewSet(viewsets.ModelViewSet):
     serializer_class = CarSeriliazer
     queryset = Car.objects.all()
     permission_classes_by_action = {'create': [IsAuthenticated, ~IsModerator],
-                                    'list': [IsAuthenticated, IsOwner],
-                                    'retrieve': [IsAuthenticated, IsOwner],
-                                    'update': [IsAuthenticated, IsOwner],
+                                    'list': [IsAuthenticated, IsOwner | IsModerator],
+                                    'retrieve': [IsAuthenticated, IsOwner | IsModerator],
+                                    'update': [IsAuthenticated, IsOwner | IsModerator],
                                     'destroy': [IsAuthenticated, IsOwner, ~IsModerator],
                                     }
 

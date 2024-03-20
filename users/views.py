@@ -34,7 +34,7 @@ class UserUpdatePIView(generics.UpdateAPIView):
 
 class UserDestroyPIView(generics.DestroyAPIView):
     queryset = User.objects.all()
-    permission_classes = [IsAuthenticated, IsOwner]
+    permission_classes = [IsAuthenticated, IsOwner, ~IsModerator]
 
 
 class PaymentCreateAPIView(generics.CreateAPIView):
@@ -67,7 +67,7 @@ class PaymentUpdatePIView(generics.UpdateAPIView):
 
 class PaymentDestroyPIView(generics.DestroyAPIView):
     queryset = Payment.objects.all()
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, ~IsModerator]
 
 
 
