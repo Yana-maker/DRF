@@ -24,7 +24,7 @@ class UserRole(models.TextChoices):
 
 class User(AbstractUser):
     role = models.CharField(max_length=9, choices=UserRole.choices, default=UserRole.MEMBER)
-    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, **NULLABLE)
+    user_owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, **NULLABLE)
 
 
 class Payment(models.Model):

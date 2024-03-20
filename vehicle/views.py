@@ -22,13 +22,36 @@ class CarViewSet(viewsets.ModelViewSet):
                                     'list': [IsAuthenticated, IsOwner],
                                     'retrieve': [IsAuthenticated, IsOwner],
                                     'update': [IsAuthenticated, IsOwner],
-                                    'destroy': [IsAuthenticated, IsOwner],
+                                    'destroy': [IsAuthenticated, IsOwner, ~IsModerator],
                                     }
 
     def perform_create(self, serializer):
-        car_moto = serializer.save()
-        car_moto.owner = self.request.user
-        car_moto.save()
+        car_new = serializer.save()
+        car_new.owner = self.request.user
+        car_new.save()
+
+    def create(self, request, *args, **kwargs):
+        return super(CarViewSet, self).create(request, *args, **kwargs)
+
+    def list(self, request, *args, **kwargs):
+        return super(CarViewSet, self).list(request, *args, **kwargs)
+
+    def retrieve(self, request, *args, **kwargs):
+        return super(CarViewSet, self).retrieve(request, *args, **kwargs)
+
+    def update(self, request, *args, **kwargs):
+        return super(CarViewSet, self).update(request, *args, **kwargs)
+
+    def destroy(self, request, *args, **kwargs):
+        return super(CarViewSet, self).destroy(request, *args, **kwargs)
+
+    def get_permissions(self):
+        try:
+            # return permission_classes depending on `action`
+            return [permission() for permission in self.permission_classes_by_action[self.action]]
+        except KeyError:
+            # action is not set return default permission_classes
+            return [permission() for permission in self.permission_classes]
 
 
 class MotoCreateAPIView(generics.CreateAPIView):
