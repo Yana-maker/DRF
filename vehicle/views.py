@@ -5,7 +5,7 @@ from rest_framework.generics import CreateAPIView
 from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
 
-from users.permissions import IsOwner, IsModerator
+from users.permissions import IsOwner, IsModerator, IsOwnerIsNotModerator
 from vehicle.models import Car, Moto, Milage
 from vehicle.permissions import IsOwnerOrStaff
 from vehicle.serializers import CarSeriliazer, MotoSeriliazer, MilageSeriliazer, MotoMilageSerializer, \
@@ -18,11 +18,11 @@ from vehicle.serializers import CarSeriliazer, MotoSeriliazer, MilageSeriliazer,
 class CarViewSet(viewsets.ModelViewSet):
     serializer_class = CarSeriliazer
     queryset = Car.objects.all()
-    permission_classes_by_action = {'create': [IsAuthenticated, ~IsModerator],
+    permission_classes_by_action = {'create': [IsAuthenticated, IsOwnerIsNotModerator],
                                     'list': [IsAuthenticated, IsOwner | IsModerator],
                                     'retrieve': [IsAuthenticated, IsOwner | IsModerator],
                                     'update': [IsAuthenticated, IsOwner | IsModerator],
-                                    'destroy': [IsAuthenticated, IsOwner, ~IsModerator],
+                                    'destroy': [IsAuthenticated, IsOwnerIsNotModerator],
                                     }
 
     def perform_create(self, serializer):
@@ -56,7 +56,7 @@ class CarViewSet(viewsets.ModelViewSet):
 
 class MotoCreateAPIView(generics.CreateAPIView):
     serializer_class = MotoCreateSerializer
-    permission_classes = [IsAuthenticated, ~IsModerator]
+    permission_classes = [IsAuthenticated, IsOwnerIsNotModerator]
 
     def perform_create(self, serializer):
         new_moto = serializer.save()
@@ -86,7 +86,7 @@ class MotoUpdatePIView(generics.UpdateAPIView):
 
 class MotoDestroyPIView(generics.DestroyAPIView):
     queryset = Moto.objects.all()
-    permission_classes = [IsAuthenticated, IsOwner, ~IsModerator]
+    permission_classes = [IsAuthenticated, IsOwnerIsNotModerator]
 
 
 class MilageCreateAPIView(CreateAPIView):

@@ -12,7 +12,6 @@ class IsOwner(BasePermission):
         return False
 
 
-
 class IsModerator(BasePermission):
     massage = 'Вы не являетесь модератором!'
 
@@ -20,3 +19,14 @@ class IsModerator(BasePermission):
         if request.user.role == UserRole.MODERATOR:
             return True
         return False
+
+
+class IsOwnerIsNotModerator(BasePermission):
+    massage = 'Вы не являетесь владельцем!'
+
+    def has_permission(self, request, view):
+        if request.user.role != UserRole.MODERATOR and request.user.owner:
+            return True
+        return False
+
+
