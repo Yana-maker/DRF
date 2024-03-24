@@ -8,6 +8,7 @@ NULLABLE = {'null': True, 'blank': True}
 
 
 class Car(models.Model):
+    """модель машины"""
     title = models.CharField(max_length=150, verbose_name='назваие')
     description = models.TextField(verbose_name='описание')
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, **NULLABLE)
@@ -21,6 +22,7 @@ class Car(models.Model):
 
 
 class Moto(models.Model):
+    """модель мотоцикла"""
     title = models.CharField(max_length=150, verbose_name='название')
     description = models.TextField(verbose_name='описание')
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, **NULLABLE)
@@ -34,6 +36,7 @@ class Moto(models.Model):
 
 
 class Milage(models.Model):
+    """модель пробега"""
     car = models.ForeignKey(Car, on_delete=models.CASCADE, **NULLABLE, related_name='milage')
     moto = models.ForeignKey(Moto, on_delete=models.CASCADE, **NULLABLE, related_name='milage')
     milage = models.PositiveIntegerField(verbose_name='пробег')

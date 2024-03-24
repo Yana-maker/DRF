@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from materials.models import Lesson, Course
+from materials.models import Lesson, Course, Subscript
 
 
 class LessonSerializer(serializers.ModelSerializer):
@@ -9,9 +9,16 @@ class LessonSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class SubscriptSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Subscript
+        fields = '__all__'
+
+
 class CourseSerializer(serializers.ModelSerializer):
-    lesson_count = serializers.SerializerMethodField()
-    lesson = LessonSerializer(many=True)
+    subscript = SubscriptSerializer(read_only=True)
+    lesson_count = serializers.SerializerMethodField(read_only=True)
+    lesson = LessonSerializer(many=True, read_only=True)
 
     class Meta:
         model = Course
@@ -21,4 +28,6 @@ class CourseSerializer(serializers.ModelSerializer):
         if Lesson.objects.filter(course=course).count():
             return Lesson.objects.filter(course=course).count()
         return 0
+
+
 

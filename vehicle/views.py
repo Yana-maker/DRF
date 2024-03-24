@@ -4,8 +4,9 @@ from rest_framework.generics import CreateAPIView
 from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
 
-from users.permissions import IsOwner, IsModerator, IsOwnerIsNotModerator
+from users.permissions import IsOwner, IsModerator, IsOwnerIsNotModerator, IsNotModerator
 from vehicle.models import Car, Moto, Milage
+from vehicle.paginators import Vehicle_pagination
 from vehicle.serializers import CarSeriliazer, MotoSeriliazer, MilageSeriliazer, MotoMilageSerializer, \
     MotoCreateSerializer
 
@@ -16,7 +17,8 @@ from vehicle.serializers import CarSeriliazer, MotoSeriliazer, MilageSeriliazer,
 class CarViewSet(viewsets.ModelViewSet):
     serializer_class = CarSeriliazer
     queryset = Car.objects.all()
-    permission_classes_by_action = {'create': [IsAuthenticated, IsOwnerIsNotModerator],
+    pagination_class = Vehicle_pagination
+    permission_classes_by_action = {'create': [IsAuthenticated, IsNotModerator],
                                     'list': [IsAuthenticated, IsOwner | IsModerator],
                                     'retrieve': [IsAuthenticated, IsOwner | IsModerator],
                                     'update': [IsAuthenticated, IsOwner | IsModerator],
@@ -54,7 +56,7 @@ class CarViewSet(viewsets.ModelViewSet):
 
 class MotoCreateAPIView(generics.CreateAPIView):
     serializer_class = MotoCreateSerializer
-    permission_classes = [IsAuthenticated, IsOwnerIsNotModerator]
+    permission_classes = [IsAuthenticated, IsNotModerator]
 
     def perform_create(self, serializer):
         new_moto = serializer.save()
@@ -66,6 +68,7 @@ class MotoListAPIView(generics.ListAPIView):
     serializer_class = MotoSeriliazer
     queryset = Moto.objects.all()
     permission_classes = [IsAuthenticated, IsOwner | IsModerator]
+    pagination_class = Vehicle_pagination
 
 
 class MotoRetrievePIView(generics.RetrieveAPIView):
@@ -94,12 +97,14 @@ class MotoMilageListAPIView(generics.ListAPIView):
     queryset = Milage.objects.filter(moto__isnull=False)
     serializer_class = MotoMilageSerializer
     permission_classes = [IsAuthenticated]
+    pagination_class = Vehicle_pagination
 
 
 class MilageListAPIView(generics.ListAPIView):
     serializer_class = MilageSeriliazer
     queryset = Milage.objects.all()
     permission_classes = [IsAuthenticated]
+    pagination_class = Vehicle_pagination
 
     filter_backends = (DjangoFilterBackend, OrderingFilter,)
     filterset_fields = ('car', 'moto')

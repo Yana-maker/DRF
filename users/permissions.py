@@ -30,3 +30,10 @@ class IsOwnerIsNotModerator(BasePermission):
         return False
 
 
+class IsNotModerator(BasePermission):
+    massage = 'Вы модератор!'
+
+    def has_permission(self, request, view):
+        if request.user.role != UserRole.MODERATOR:
+            return True
+        return False

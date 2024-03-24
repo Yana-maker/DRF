@@ -23,11 +23,13 @@ class UserRole(models.TextChoices):
 
 
 class User(AbstractUser):
+    """модель юзера"""
     role = models.CharField(max_length=9, choices=UserRole.choices, default=UserRole.MEMBER)
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, **NULLABLE)
 
 
 class Payment(models.Model):
+    """модель платежей"""
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='пользователь')
     payment_date = models.DateTimeField(verbose_name='дата платежа')
     paid_course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name='оплаченный курс')
