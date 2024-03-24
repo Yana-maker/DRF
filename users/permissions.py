@@ -4,6 +4,7 @@ from users.models import UserRole
 
 
 class IsOwner(BasePermission):
+    """права доступа для владельца"""
     massage = 'Вы не являетесь владельцем!'
 
     def has_object_permission(self, request, view, obj):
@@ -13,6 +14,7 @@ class IsOwner(BasePermission):
 
 
 class IsModerator(BasePermission):
+    """права доступа для модератора"""
     massage = 'Вы не являетесь модератором!'
 
     def has_permission(self, request, view):
@@ -21,16 +23,8 @@ class IsModerator(BasePermission):
         return False
 
 
-class IsOwnerIsNotModerator(BasePermission):
-    massage = 'Вы не являетесь владельцем!'
-
-    def has_permission(self, request, view):
-        if request.user.role != UserRole.MODERATOR and request.user.owner:
-            return True
-        return False
-
-
 class IsNotModerator(BasePermission):
+    """запрет для модератора"""
     massage = 'Вы модератор!'
 
     def has_permission(self, request, view):

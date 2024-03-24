@@ -4,7 +4,7 @@ from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
 
 from users.models import Payment, User
-from users.permissions import IsOwner, IsModerator, IsOwnerIsNotModerator
+from users.permissions import IsOwner, IsModerator, IsOwnerIsNotModerator, IsNotModerator
 from users.serializers import PaymentSerializer, UserSerializer
 
 
@@ -12,6 +12,7 @@ from users.serializers import PaymentSerializer, UserSerializer
 
 
 class UserCreateAPIView(generics.CreateAPIView):
+    """создание юзера"""
     serializer_class = UserSerializer
 
     def perform_create(self, serializer):
@@ -21,28 +22,33 @@ class UserCreateAPIView(generics.CreateAPIView):
 
 
 class UserRetrievePIView(generics.RetrieveAPIView):
+    """просмотр деталей юзера"""
     serializer_class = UserSerializer
     queryset = User.objects.all()
     permission_classes = [IsAuthenticated, IsOwner | IsModerator]
 
 
 class UserUpdatePIView(generics.UpdateAPIView):
+    """редактирование юзера"""
     serializer_class = UserSerializer
     queryset = User.objects.all()
     permission_classes = [IsAuthenticated, IsOwner | IsModerator]
 
 
 class UserDestroyPIView(generics.DestroyAPIView):
+    """удаление юзера"""
     queryset = User.objects.all()
     permission_classes = [IsAuthenticated, IsOwnerIsNotModerator]
 
 
 class PaymentCreateAPIView(generics.CreateAPIView):
+    """создание платежа"""
     serializer_class = PaymentSerializer
-    permission_classes = [IsAuthenticated, IsOwnerIsNotModerator]
+    permission_classes = [IsAuthenticated, IsOwner, IsNotModerator]
 
 
 class PaymentListAPIView(generics.ListAPIView):
+    """список всех созданных платежей"""
     serializer_class = PaymentSerializer
     queryset = Payment.objects.all()
     permission_classes = [IsAuthenticated]
@@ -54,17 +60,20 @@ class PaymentListAPIView(generics.ListAPIView):
 
 
 class PaymentRetrievePIView(generics.RetrieveAPIView):
+    """просмотр деталей платежа"""
     serializer_class = PaymentSerializer
     queryset = Payment.objects.all()
     permission_classes = [IsAuthenticated]
 
 
 class PaymentUpdatePIView(generics.UpdateAPIView):
+    """редактирование платежа"""
     serializer_class = PaymentSerializer
     queryset = Payment.objects.all()
     permission_classes = [IsAuthenticated]
 
 
 class PaymentDestroyPIView(generics.DestroyAPIView):
+    """удаление платежа"""
     queryset = Payment.objects.all()
-    permission_classes = [IsAuthenticated, IsOwnerIsNotModerator]
+    permission_classes = [IsAuthenticated, IsOwner, IsNotModerator]

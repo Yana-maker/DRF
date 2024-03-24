@@ -1,5 +1,4 @@
 from django.shortcuts import get_object_or_404
-
 from rest_framework import viewsets, generics
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
@@ -8,21 +7,22 @@ from rest_framework.views import APIView
 from materials.models import Course, Lesson, Subscript
 from materials.paginators import Material_pagination
 from materials.serializers import CourseSerializer, LessonSerializer, SubscriptSerializer
-from users.permissions import IsOwner, IsModerator, IsOwnerIsNotModerator, IsNotModerator
+from users.permissions import IsOwner, IsModerator, IsNotModerator
 
 
 # Create your views here.
 
 
 class CourseViewSet(viewsets.ModelViewSet):
+    """viewset для модели курс"""
     serializer_class = CourseSerializer
     queryset = Course.objects.all()
     pagination_class = Material_pagination
-    permission_classes_by_action = {'create': [AllowAny, IsNotModerator],
-                                    'list': [AllowAny, IsOwner | IsModerator],
-                                    'retrieve': [AllowAny, IsOwner | IsModerator],
-                                    'update': [AllowAny, IsOwner | IsModerator],
-                                    'destroy': [AllowAny, IsOwner, IsNotModerator],
+    permission_classes_by_action = {'create': [IsAuthenticated, IsNotModerator],
+                                    'list': [IsAuthenticated, IsOwner | IsModerator],
+                                    'retrieve': [IsAuthenticated, IsOwner | IsModerator],
+                                    'update': [IsAuthenticated, IsOwner | IsModerator],
+                                    'destroy': [IsAuthenticated, IsOwner, IsNotModerator],
                                     }
 
     def perform_create(self, serializer):
@@ -55,8 +55,9 @@ class CourseViewSet(viewsets.ModelViewSet):
 
 
 class LessonCreateAPIView(generics.CreateAPIView):
+    """создание урока"""
     serializer_class = LessonSerializer
-    permission_classes = [AllowAny, IsNotModerator]
+    permission_classes = [IsAuthenticated, IsNotModerator]
 
     def perform_create(self, serializer):
         new_lesson = serializer.save()
@@ -65,35 +66,40 @@ class LessonCreateAPIView(generics.CreateAPIView):
 
 
 class LessonListAPIView(generics.ListAPIView):
+    """список уроков"""
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
-    permission_classes = [AllowAny, IsOwner | IsModerator]
+    permission_classes = [IsAuthenticated, IsOwner | IsModerator]
     pagination_class = Material_pagination
 
 
 class LessonRetrievePIView(generics.RetrieveAPIView):
+    """просмотр деталей урока"""
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
     permission_classes = [IsAuthenticated, IsOwner | IsModerator]
 
 
 class LessonUpdatePIView(generics.UpdateAPIView):
+    """редактирование урока"""
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
     permission_classes = [IsAuthenticated, IsOwner | IsModerator]
 
 
 class LessonDestroyPIView(generics.DestroyAPIView):
+    """удаление урока"""
     queryset = Lesson.objects.all()
-    permission_classes = [IsAuthenticated, IsOwnerIsNotModerator]
+    permission_classes = [IsAuthenticated, IsOwner, IsNotModerator]
 
 
 class CourseSubscriptView(APIView):
+    """подписка на курс"""
     serializer_class = SubscriptSerializer
     queryset = Subscript.objects.all()
 
 
-    def post(self, *args, **kwargs):
+    def post(self):
         user = self.request.user
         course_id = self.request.data.get("course")
         course_item = get_object_or_404(Course, pk=course_id)
@@ -107,11 +113,11 @@ class CourseSubscriptView(APIView):
         if subs_item.exists():
             subs_item.delete()
             message = 'подписка удалена'
+
         # Если подписки у пользователя на этот курс нет - создаем ее
         else:
             subs_item = Subscript.objects.create(user=user, course=course_item)
             subs_item.save()
             message = 'подписка добавлена'
         # Возвращаем ответ в API
-        return Response({"message": message})
-
+        return Response({'message': message})

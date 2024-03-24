@@ -9,16 +9,19 @@ class MaterialsTestCase(APITestCase):
 
     def setUp(self) -> None:
         self.user = User.objects.create(
+            id=1,
             username='admin',
             password=1234
         )
 
         self.lesson = Lesson.objects.create(
+            id=3,
             title='test-урок',
             owner=self.user
         )
 
         self.course = Course.objects.create(
+            id=2,
             title='test-курс',
             owner=self.user
         )
@@ -40,7 +43,7 @@ class MaterialsTestCase(APITestCase):
 
         self.assertEquals(
             response.json(),
-            response.json()
+            {'count': 1, 'next': None, 'previous': None, 'results': [{'id': 3, 'title': 'test-урок', 'description': None, 'image': None, 'link': None, 'owner': 1}]}
         )
 
     def test_lesson_create(self):
@@ -49,6 +52,7 @@ class MaterialsTestCase(APITestCase):
         self.client.force_authenticate(user=self.user)
 
         data = {
+            'id': 2,
             'title': 'test 2',
             'owner': self.user.id
         }
@@ -65,10 +69,7 @@ class MaterialsTestCase(APITestCase):
             status.HTTP_201_CREATED
         )
 
-        self.assertEquals(
-            response.json(),
-            response.json()
-        )
+
 
     def test_lesson_update(self):
         """тест на редактирования урока"""
@@ -93,9 +94,11 @@ class MaterialsTestCase(APITestCase):
         )
 
         self.assertEquals(
-            response.json(),
-            response.json()
+            response.data['title'],
+            data['title']
         )
+
+
 
 
     def test_lesson_Retrieve(self):
@@ -104,8 +107,8 @@ class MaterialsTestCase(APITestCase):
         self.client.force_authenticate(user=self.user)
         url = reverse('materials:Lesson-Retrieve', args=[self.lesson.id])
         data = {
-            'id': 4,
-            'title': 'update test 2',
+            'id': self.lesson.id,
+            'title': self.lesson.title,
         }
 
         response = self.client.get(
@@ -120,6 +123,32 @@ class MaterialsTestCase(APITestCase):
         )
 
         self.assertEquals(
-            response.json(),
-            response.json()
+            response.data['title'],
+            data['title']
         )
+
+
+    def test_lesson_Destroy(self):
+        """тест на удаление урока"""
+
+
+        self.client.force_authenticate(user=self.user)
+
+        print(self.user.id)
+
+
+        url = reverse('materials:Lesson-Destroy', args=[self.lesson.id])
+
+        response = self.client.delete(
+            url
+        )
+
+        self.assertEquals(
+            response.status_code,
+            status.HTTP_204_NO_CONTENT
+        )
+
+        self.assertFalse(
+            Lesson.objects.filter(id=self.lesson.id).exists()
+        )
+
