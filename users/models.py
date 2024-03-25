@@ -11,10 +11,11 @@ from django.utils.translation import gettext_lazy as _
 NULLABLE = {'null': True, 'blank': True}
 
 
-payment_method = {
-    'наличные': 'наличные',
-    'безналичные': 'безналичные',
-}
+class payment_method:
+    choices = (
+        ("наличные", "наличные"),
+        ("безналичные", "безналичные"),
+    )
 
 
 class UserRole(models.TextChoices):
@@ -34,7 +35,7 @@ class Payment(models.Model):
     payment_date = models.DateTimeField(verbose_name='дата платежа')
     paid_course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name='оплаченный курс')
     paid_lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, verbose_name='оплаченный урок')
-    payment_method = models.TextField(choices=payment_method, verbose_name='способ оплаты')
+    payment_method = models.TextField(choices=payment_method.choices, verbose_name='способ оплаты')
     amount_payment = models.IntegerField(verbose_name='сумма платежа')
 
     def __str__(self):
