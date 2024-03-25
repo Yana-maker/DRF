@@ -34,7 +34,6 @@ class MaterialsTestCase(APITestCase):
         response = self.client.get(
             '/Lesson/list/'
         )
-        print(f'ответ по тесту 1 - {response.json()}')
 
         self.assertEquals(
             response.status_code,
@@ -62,7 +61,6 @@ class MaterialsTestCase(APITestCase):
             data=data
         )
 
-        print(f'ответ по тесту 2 - {response.json()}')
 
         self.assertEquals(
             response.status_code,
@@ -86,7 +84,6 @@ class MaterialsTestCase(APITestCase):
             data=data,
         )
 
-        print(f'ответ по тесту 3 - {response.json()}')
 
         self.assertEquals(
             response.status_code,
@@ -115,7 +112,6 @@ class MaterialsTestCase(APITestCase):
             url
         )
 
-        print(f'ответ по тесту 4 - {response.json()}')
 
         self.assertEquals(
             response.status_code,
@@ -155,7 +151,7 @@ class MaterialsTestCase(APITestCase):
         response = self.client.get(
             '/course/'
         )
-        print(f'ответ по тесту 6 - {response.json()}')
+
 
         self.assertEquals(
             response.status_code,
@@ -183,7 +179,6 @@ class MaterialsTestCase(APITestCase):
             data=data
         )
 
-        print(f'ответ по тесту 7 - {response.json()}')
 
         self.assertEquals(
             response.status_code,
@@ -207,7 +202,6 @@ class MaterialsTestCase(APITestCase):
             data=data,
         )
 
-        print(f'ответ по тесту 8 - {response.json()}')
 
         self.assertEquals(
             response.status_code,
@@ -218,7 +212,6 @@ class MaterialsTestCase(APITestCase):
             response.data['title'],
             data['title']
         )
-
 
 
 
@@ -236,7 +229,6 @@ class MaterialsTestCase(APITestCase):
             url
         )
 
-        print(f'ответ по тесту 9 - {response.json()}')
 
         self.assertEquals(
             response.status_code,
