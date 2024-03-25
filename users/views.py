@@ -4,7 +4,7 @@ from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
 
 from users.models import Payment, User
-from users.permissions import IsOwner, IsModerator, IsOwnerIsNotModerator, IsNotModerator
+from users.permissions import IsOwner, IsModerator, IsNotModerator
 from users.serializers import PaymentSerializer, UserSerializer
 
 
@@ -38,7 +38,7 @@ class UserUpdatePIView(generics.UpdateAPIView):
 class UserDestroyPIView(generics.DestroyAPIView):
     """удаление юзера"""
     queryset = User.objects.all()
-    permission_classes = [IsAuthenticated, IsOwnerIsNotModerator]
+    permission_classes = [IsAuthenticated, IsOwner, IsNotModerator]
 
 
 class PaymentCreateAPIView(generics.CreateAPIView):

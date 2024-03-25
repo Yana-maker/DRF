@@ -4,7 +4,7 @@ from rest_framework.generics import CreateAPIView
 from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
 
-from users.permissions import IsOwner, IsModerator, IsOwnerIsNotModerator, IsNotModerator
+from users.permissions import IsOwner, IsModerator, IsNotModerator
 from vehicle.models import Car, Moto, Milage
 from vehicle.paginators import Vehicle_pagination
 from vehicle.serializers import CarSeriliazer, MotoSeriliazer, MilageSeriliazer, MotoMilageSerializer, \
@@ -22,7 +22,7 @@ class CarViewSet(viewsets.ModelViewSet):
                                     'list': [IsAuthenticated, IsOwner | IsModerator],
                                     'retrieve': [IsAuthenticated, IsOwner | IsModerator],
                                     'update': [IsAuthenticated, IsOwner | IsModerator],
-                                    'destroy': [IsAuthenticated, IsOwnerIsNotModerator],
+                                    'destroy': [IsAuthenticated, IsOwner, IsNotModerator],
                                     }
 
     def perform_create(self, serializer):
@@ -85,7 +85,7 @@ class MotoUpdatePIView(generics.UpdateAPIView):
 
 class MotoDestroyPIView(generics.DestroyAPIView):
     queryset = Moto.objects.all()
-    permission_classes = [IsAuthenticated, IsOwnerIsNotModerator]
+    permission_classes = [IsAuthenticated, IsOwner, IsNotModerator]
 
 
 class MilageCreateAPIView(CreateAPIView):
