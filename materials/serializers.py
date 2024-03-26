@@ -19,7 +19,7 @@ class SubscriptSerializer(serializers.ModelSerializer):
 
 class CourseSerializer(serializers.ModelSerializer):
     """сериализатор для курса"""
-    subscript = SubscriptSerializer(read_only=True)
+    subscript = SubscriptSerializer(many=True, read_only=True, source='subscripts')
     lesson_count = serializers.SerializerMethodField(read_only=True)
     lesson = LessonSerializer(many=True, read_only=True)
 

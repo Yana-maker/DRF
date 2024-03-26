@@ -99,14 +99,12 @@ class CourseSubscriptView(APIView):
     queryset = Subscript.objects.all()
 
 
-    def post(self):
+    def post(self, *args, **kwargs):
         user = self.request.user
         course_id = self.request.data.get("course")
         course_item = get_object_or_404(Course, pk=course_id)
         subs_item = Subscript.objects.filter(user=user, course=course_item)
-        print(self.request.data.get("course"))
-        print(user)
-        print(subs_item)
+
 
 
         # Если подписка у пользователя на этот курс есть - удаляем ее

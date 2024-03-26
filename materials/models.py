@@ -46,7 +46,7 @@ class Course(models.Model):
 class Subscript(models.Model):
     """модель подписки """
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='пользователь')
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name='курс')
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name='курс', related_name='subscripts')
     is_active_subscript = models.BooleanField(default=True, verbose_name='подписка')
 
     def __str__(self):
